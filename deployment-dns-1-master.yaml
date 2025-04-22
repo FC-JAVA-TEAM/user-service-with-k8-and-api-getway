@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: shaikh79/user-service1:2.0.1 # Replace with your image
+          ports:
+            - containerPort: 7878
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value:  # Replace with your DB URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value:  # Replace with your DB username
+            - name: SPRING_DATASOURCE_PASSWORD
+              value:  # Replace with your DB password
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  type: ClusterIP #LoadBalancer
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 7878
